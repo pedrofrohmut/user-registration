@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Webapi.Models;
 
@@ -48,9 +49,17 @@ namespace Webapi.Controllers
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ApplicationUser>> GetAll()
+    public async Task<IEnumerable<object>> GetAll()
     {
-      return this.authCtx.ApplicationUsers;
+      return
+        this.authCtx.ApplicationUsers
+          .Select(user => new
+          {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            FullName = user.FullName
+          });
     }
   }
 }
