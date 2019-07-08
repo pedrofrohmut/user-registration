@@ -50,4 +50,8 @@ export class UsersService {
 
     return this.http.post(`${USERS_URL}/register`, body)
   }
+
+  login(formData) {
+    return this.http.post(`${USERS_URL}/login`, formData)
+  }
 }

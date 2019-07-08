@@ -1,12 +1,23 @@
 src/
     app/
-        user/
-            user.component
-            registration/
-                registration.component
-            shared/
-                user.service
+        auth/
+            auth.guard
+            auth.interceptor
+        component/
+            layout/
+                navbar/
+                    navbar.comnponent
+        pages/
+            home/
+                home.component
+            user/
+                login/
+                    login.component
+                registration/
+                    registration.component
+        services/
+            user-profiles.service
+            users.service
         app.module
         app.component
         app-routing
-    index.html
