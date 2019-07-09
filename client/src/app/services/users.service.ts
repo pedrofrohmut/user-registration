@@ -3,10 +3,10 @@ import { FormBuilder, Validators, FormGroup } from "@angular/forms"
 import { HttpClient } from "@angular/common/http"
 
 const SERVER_URL = "http://localhost:5000"
-const USERS_URL = `${SERVER_URL}/api/applicationusers`
+const USERS_URL = `${SERVER_URL}/api/v1/application_users`
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class UsersService {
   formModel = this.formBuilder.group({
@@ -16,10 +16,10 @@ export class UsersService {
     Passwords: this.formBuilder.group(
       {
         Password: ["", [Validators.minLength(4), Validators.required]],
-        ConfirmPassword: ["", Validators.required]
+        ConfirmPassword: ["", Validators.required],
       },
       { validator: this.comparePasswordsCtrls }
-    )
+    ),
   })
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
@@ -45,13 +45,22 @@ export class UsersService {
       UserName: this.formModel.value.UserName,
       Email: this.formModel.value.Email,
       FullName: this.formModel.value.FullName,
-      Password: this.formModel.value.Passwords.Password
+      Password: this.formModel.value.Passwords.Password,
     }
 
     return this.http.post(`${USERS_URL}/register`, body)
   }
 
   login(formData) {
+    localStorage.removeItem("toke")
     return this.http.post(`${USERS_URL}/login`, formData)
+  }
+
+  roleMatch(allowedRoles) {
+    const payload = JSON.parse(
+      window.atob(localStorage.getItem("token").split(".")[1])
+    )
+    const userRole = payload.role
+    return allowedRoles.contains(userRole)
   }
 }

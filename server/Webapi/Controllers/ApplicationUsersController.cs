@@ -14,7 +14,7 @@ using Webapi.Models;
 
 namespace Webapi.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/v1/application_users")]
   [ApiController]
   public class ApplicationUsersController : ControllerBase
   {
@@ -47,10 +47,12 @@ namespace Webapi.Controllers
         Email = model.Email,
         FullName = model.FullName
       };
+      model.Role = "Customer";
 
       try
       {
         var result = await this.userManager.CreateAsync(applicationUser, model.Password);
+        await this.userManager.AddToRoleAsync(applicationUser, model.Role);
         return Ok(result);
       }
       catch (System.Exception ex)
@@ -91,14 +93,19 @@ namespace Webapi.Controllers
         });
       }
 
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["JWT_SECRET"].ToString()));
+      var key = new SymmetricSecurityKey(
+        Encoding.UTF8.GetBytes(this.config["JWT_SECRET"].ToString()));
       var algorithm = SecurityAlgorithms.HmacSha256Signature;
+
+      var role = await this.userManager.GetRolesAsync(user);
+      IdentityOptions options = new IdentityOptions();
 
       var tokenDescriptor = new SecurityTokenDescriptor
       {
         Subject = new ClaimsIdentity(new Claim[]
         {
-          new Claim("UserID", user.Id.ToString())
+          new Claim("UserID", user.Id.ToString()),
+          new Claim(options.ClaimsIdentity.RoleClaimType, role.FirstOrDefault())
         }),
         Expires = DateTime.UtcNow.AddDays(1),
         SigningCredentials = new SigningCredentials(key, algorithm)

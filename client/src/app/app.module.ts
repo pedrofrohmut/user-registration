@@ -12,11 +12,12 @@ import { RegistrationComponent } from "./pages/users/registration/registration.c
 import { UsersService } from "./services/users.service"
 import { LoginComponent } from "./pages/users/login/login.component";
 import { HomeComponent } from './pages/home/home.component';
-import { SignInSignUpWrapperComponent } from './pages/users/sign-in-sign-up-wrapper/sign-in-sign-up-wrapper.component';
-import { NavbarComponent } from './components/layout/navbar/navbar.component'
+import { NavbarComponent } from './components/layout/navbar/navbar.component';
+import { AdminPanelComponent } from './page/admin-panel/admin-panel.component';
+import { ForbiddenComponent } from './pages/forbidden/forbidden.component'
 
 @NgModule({
-  declarations: [AppComponent, RegistrationComponent, LoginComponent, HomeComponent, SignInSignUpWrapperComponent, NavbarComponent],
+  declarations: [AppComponent, RegistrationComponent, LoginComponent, HomeComponent, NavbarComponent, AdminPanelComponent, ForbiddenComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

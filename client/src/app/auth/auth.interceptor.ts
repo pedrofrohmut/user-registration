@@ -2,7 +2,7 @@ import {
   HttpInterceptor,
   HttpRequest,
   HttpHandler,
-  HttpEvent
+  HttpEvent,
 } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Observable } from "rxjs"
@@ -20,15 +20,20 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = localStorage.getItem("token")
     if (token != null) {
       const clonedReq = req.clone({
-        headers: req.headers.set("Authorization", `Bearer ${token}`)
+        headers: req.headers.set("Authorization", `Bearer ${token}`),
       })
       return next.handle(clonedReq).pipe(
         tap(
           successs => {},
           error => {
-            if (error.status === 401) {
-              localStorage.removeItem("token")
-              this.router.navigateByUrl("/users/login")
+            switch (error.status) {
+              case 401:
+                localStorage.removeItem("token")
+                this.router.navigateByUrl("/users/login")
+                break
+              case 403:
+                this.router.navigateByUrl("forbidden")
+                break
             }
           }
         )
